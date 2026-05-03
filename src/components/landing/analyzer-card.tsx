@@ -98,6 +98,15 @@ export function AnalyzerCard({
         <Textarea
           value={message}
           onChange={(event) => setMessage(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+
+              if (!isLoading) {
+                void analyzeMessage();
+              }
+            }
+          }}
           className="min-h-56 resize-none"
           placeholder={t.analyzer.placeholder}
         />
