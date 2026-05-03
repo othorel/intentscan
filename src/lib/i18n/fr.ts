@@ -5,8 +5,10 @@ export const fr = {
   },
 
   hero: {
-    eyebrow: "Analyseur d’intention de messages par IA",
-    title: "Décryptez les messages suspects avant de répondre.",
+    eyebrow: "Analyse IA",
+    signal: "Arnaques · Spam · Phishing",
+    title: "Décryptez avant de répondre.",
+    highlight: "Comprenez la vraie intention.",
     description:
       "Collez un DM, email, SMS ou message LinkedIn. IntentScan détecte les arnaques, le spam, la manipulation, les signaux sociaux suspects, puis génère des réponses prêtes à copier.",
     analyze: "Analyser un message",
@@ -30,6 +32,22 @@ export const fr = {
     replies: "Réponses prêtes à copier",
     copy: "Copier",
     copied: "Copié !",
+    helperEnter: "Entrée ↵ pour analyser",
+    helperNewLine: "Maj + Entrée pour nouvelle ligne",
+    riskLevels: {
+      LOW: "Faible",
+      MEDIUM: "Moyen",
+      HIGH: "Élevé",
+    },
+    intentLabels: {
+      LEGIT: "Légitime",
+      SALES: "Commercial",
+      SCAM: "Arnaque",
+      PHISHING: "Phishing",
+      ROMANCE: "Arnaque sentimentale",
+      RECRUITING: "Recrutement",
+      UNKNOWN: "Inconnu",
+    },
   },
 
   tones: {
@@ -41,7 +59,6 @@ export const fr = {
 
   examples: {
     clickToTry: "Cliquer pour essayer",
-
     items: [
       "Bonjour, je peux vous aider à gagner 5 000 € par semaine avec mon accompagnement crypto. Envoyez-moi votre WhatsApp et je vous explique.",
       "Bonjour, souhaitez-vous obtenir un site web gratuitement ? Nous avons déjà créé plus de 30 000 sites et sommes classés numéro 1 en ligne.",
