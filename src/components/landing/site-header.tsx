@@ -1,14 +1,12 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Locale, Translations } from "@/lib/i18n";
 
 type SiteHeaderProps = {
   locale: Locale;
-  setLocale: Dispatch<SetStateAction<Locale>>;
+  setLocale: (locale: Locale) => void;
   t: Translations;
 };
 
