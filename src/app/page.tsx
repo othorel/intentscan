@@ -1,3 +1,8 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+
 const examples = [
   "Hey dear, I can help you make $5,000 per week with my crypto mentorship.",
   "Hi Olivier, any interest in having a website built for you free of charge?",
@@ -8,11 +13,11 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,oklch(0.75_0.14_80_/_0.16),transparent_35%),radial-gradient(circle_at_bottom_right,oklch(1_0_0_/_0.08),transparent_30%)]" />
 
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl border border-border bg-white/5 text-sm font-bold text-accent">
+            <div className="flex size-9 items-center justify-center rounded-xl border border-border bg-card text-sm font-bold text-primary">
               IS
             </div>
             <span className="text-sm font-semibold tracking-wide">
@@ -20,78 +25,68 @@ export default function Home() {
             </span>
           </div>
 
-          <span className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted">
-            MVP Preview
-          </span>
+          <Badge variant="secondary">MVP Preview</Badge>
         </header>
 
         <div className="grid flex-1 items-center gap-12 py-20 lg:grid-cols-[1fr_0.9fr]">
           <div>
-            <p className="mb-5 inline-flex rounded-full border border-border bg-white/5 px-4 py-2 text-sm text-muted">
+            <Badge variant="outline" className="mb-5">
               AI-powered message intent analyzer
-            </p>
+            </Badge>
 
             <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
               Decode suspicious messages before you reply.
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
               Paste a DM, email, SMS, or LinkedIn pitch. IntentScan detects
               scams, spam, manipulation, social red flags, and generates clean
               replies you can copy.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#analyze"
-                className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
-              >
-                Analyze a message
-              </a>
-              <a
-                href="#examples"
-                className="rounded-full border border-border bg-white/5 px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
-              >
-                View examples
-              </a>
+              <Button asChild size="lg">
+                <a href="#analyze">Analyze a message</a>
+              </Button>
+
+              <Button asChild size="lg" variant="outline">
+                <a href="#examples">View examples</a>
+              </Button>
             </div>
           </div>
 
-          <div
-            id="analyze"
-            className="rounded-3xl border border-border bg-white/[0.04] p-5 shadow-2xl backdrop-blur"
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h2 className="font-semibold">Message analyzer</h2>
-                <p className="mt-1 text-sm text-muted">
-                  Mistral integration coming next.
-                </p>
-              </div>
-              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                Preview
-              </div>
-            </div>
+          <Card id="analyze" className="bg-card/70 shadow-2xl backdrop-blur">
+            <CardContent className="p-5">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="font-semibold">Message analyzer</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Mistral integration coming next.
+                  </p>
+                </div>
 
-            <textarea
-              className="min-h-56 w-full resize-none rounded-2xl border border-border bg-black/30 p-4 text-sm outline-none transition placeholder:text-zinc-600 focus:border-accent/60"
-              placeholder="Paste a weird message here..."
-            />
+                <Badge>Preview</Badge>
+              </div>
 
-            <button className="mt-4 w-full rounded-2xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90">
-              Analyze intent
-            </button>
-          </div>
+              <Textarea
+                className="min-h-56 resize-none"
+                placeholder="Paste a weird message here..."
+              />
+
+              <Button className="mt-4 w-full" size="lg">
+                Analyze intent
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         <section id="examples" className="grid gap-4 pb-10 md:grid-cols-3">
           {examples.map((example) => (
-            <div
-              key={example}
-              className="rounded-2xl border border-border bg-white/[0.03] p-4 text-sm leading-6 text-muted"
-            >
-              “{example}”
-            </div>
+            <Card key={example} className="bg-card/60">
+              <CardContent className="p-4 text-sm leading-6 text-muted-foreground">
+                “{example}”
+              </CardContent>
+            </Card>
           ))}
         </section>
       </section>
