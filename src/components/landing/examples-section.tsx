@@ -1,20 +1,35 @@
+import type { Dispatch, SetStateAction } from "react";
+
 import { Card, CardContent } from "@/components/ui/card";
+import type { Translations } from "@/lib/i18n";
 
-const examples = [
-  "Hey dear, I can help you make $5,000 per week with my crypto mentorship.",
-  "Hi Olivier, any interest in having a website built for you free of charge?",
-  "Your package is blocked. Click this link now to confirm your delivery details.",
-];
+type ExamplesSectionProps = {
+  setMessage: Dispatch<SetStateAction<string>>;
+  t: Translations;
+};
 
-export function ExamplesSection() {
+export function ExamplesSection({
+  setMessage,
+  t,
+}: ExamplesSectionProps) {
   return (
     <section id="examples" className="grid gap-4 pb-10 md:grid-cols-3">
-      {examples.map((example) => (
-        <Card key={example} className="bg-card/60">
-          <CardContent className="p-4 text-sm leading-6 text-muted-foreground">
-            “{example}”
-          </CardContent>
-        </Card>
+      {t.examples.items.map((example) => (
+        <button
+          key={example}
+          type="button"
+          onClick={() => setMessage(example)}
+          className="text-left"
+        >
+          <Card className="h-full bg-card/60 transition hover:border-primary/40 hover:bg-card/80">
+            <CardContent className="p-4 text-sm leading-6 text-muted-foreground">
+              “{example}”
+              <div className="mt-4 text-xs font-medium text-primary">
+                {t.examples.clickToTry}
+              </div>
+            </CardContent>
+          </Card>
+        </button>
       ))}
     </section>
   );

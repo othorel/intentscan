@@ -1,5 +1,6 @@
 "use client";
 
+import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -7,16 +8,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { AnalyzeResponse } from "@/lib/analyze-schema";
+import type { Translations } from "@/lib/i18n";
 
-const replyLabels = {
-  professional: "Professional",
-  firm: "Firm",
-  friendly: "Friendly",
-  roast: "Roast",
+const riskStyles = {
+  LOW: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+  MEDIUM: "border-amber-500/30 bg-amber-500/10 text-amber-300",
+  HIGH: "border-red-500/30 bg-red-500/10 text-red-300",
 } as const;
 
-export function AnalyzerCard() {
-  const [message, setMessage] = useState("");
+type AnalyzerCardProps = {
+  message: string;
+  setMessage: Dispatch<SetStateAction<string>>;
+  t: Translations;
+};
+
+export function AnalyzerCard({ message, setMessage, t }: AnalyzerCardProps) {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +30,7 @@ export function AnalyzerCard() {
 
   async function analyzeMessage() {
     if (message.trim().length < 10) {
-      setError("Message must contain at least 10 characters.");
+      setError(t.analyzer.minLengthError);
       return;
     }
 
@@ -44,13 +50,13 @@ export function AnalyzerCard() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message ?? "Failed to analyze message.");
+        setError(data.message ?? t.analyzer.genericError);
         return;
       }
 
       setResult(data as AnalyzeResponse);
     } catch {
-      setError("Something went wrong.");
+      setError(t.analyzer.genericError);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +71,7 @@ export function AnalyzerCard() {
         setCopiedTone(null);
       }, 1500);
     } catch {
-      setError("Failed to copy reply.");
+      setError(t.analyzer.copyError);
     }
   }
 
@@ -74,20 +80,20 @@ export function AnalyzerCard() {
       <CardContent className="p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <h2 className="font-semibold">Message analyzer</h2>
+            <h2 className="font-semibold">{t.analyzer.title}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Paste anything suspicious.
+              {t.analyzer.description}
             </p>
           </div>
 
-          <Badge>{isLoading ? "Analyzing..." : "Live"}</Badge>
+          <Badge>{isLoading ? t.analyzer.analyzing : t.analyzer.live}</Badge>
         </div>
 
         <Textarea
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           className="min-h-56 resize-none"
-          placeholder="Paste a weird message here..."
+          placeholder={t.analyzer.placeholder}
         />
 
         {error ? <p className="mt-3 text-sm text-red-400">{error}</p> : null}
@@ -98,32 +104,44 @@ export function AnalyzerCard() {
           className="mt-4 w-full"
           size="lg"
         >
-          {isLoading ? "Analyzing..." : "Analyze intent"}
+          {isLoading ? t.analyzer.analyzing : t.analyzer.button}
         </Button>
 
         {result ? (
           <div className="mt-6 space-y-5 rounded-2xl border border-border bg-background/40 p-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">
-                Risk: {result.riskLevel} ({result.riskScore}/100)
+              <Badge className={riskStyles[result.riskLevel]}>
+                {t.analyzer.risk}: {result.riskLevel} ({result.riskScore}/100)
               </Badge>
 
-              <Badge variant="outline">Intent: {result.intent}</Badge>
+              <span className="text-xs text-muted-foreground">
+                {t.analyzer.intent}: {result.intent}
+              </span>
             </div>
 
             <p className="text-sm text-muted-foreground">{result.summary}</p>
 
-            <div>
-              <h3 className="mb-2 text-sm font-semibold">Red flags</h3>
-              <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                {result.redFlags.map((flag) => (
-                  <li key={flag}>{flag}</li>
-                ))}
-              </ul>
-            </div>
+            {result.redFlags.length > 0 ? (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">
+                  {t.analyzer.redFlags}
+                </h3>
+                <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                  {result.redFlags.map((flag) => (
+                    <li key={flag}>{flag}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-border bg-card p-3 text-sm text-muted-foreground">
+                {t.analyzer.noRedFlags}
+              </div>
+            )}
 
             <div>
-              <h3 className="mb-3 text-sm font-semibold">Copy-ready replies</h3>
+              <h3 className="mb-3 text-sm font-semibold">
+                {t.analyzer.replies}
+              </h3>
 
               <div className="grid gap-3">
                 {Object.entries(result.replyOptions).map(([tone, reply]) => (
@@ -133,7 +151,7 @@ export function AnalyzerCard() {
                   >
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-                        {replyLabels[tone as keyof typeof replyLabels]}
+                        {t.tones[tone as keyof typeof t.tones]}
                       </div>
 
                       <Button
@@ -142,7 +160,9 @@ export function AnalyzerCard() {
                         size="sm"
                         onClick={() => copyReply(tone, reply)}
                       >
-                        {copiedTone === tone ? "Copied!" : "Copy"}
+                        {copiedTone === tone
+                          ? t.analyzer.copied
+                          : t.analyzer.copy}
                       </Button>
                     </div>
 
