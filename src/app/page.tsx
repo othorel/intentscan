@@ -1,65 +1,100 @@
-import Image from "next/image";
+const examples = [
+  "Hey dear, I can help you make $5,000 per week with my crypto mentorship.",
+  "Hi Olivier, any interest in having a website built for you free of charge?",
+  "Your package is blocked. Click this link now to confirm your delivery details.",
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen overflow-hidden bg-background text-foreground">
+      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" />
+
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-xl border border-border bg-white/5 text-sm font-bold text-accent">
+              IS
+            </div>
+            <span className="text-sm font-semibold tracking-wide">
+              IntentScan
+            </span>
+          </div>
+
+          <span className="rounded-full border border-border bg-white/5 px-3 py-1 text-xs text-muted">
+            MVP Preview
+          </span>
+        </header>
+
+        <div className="grid flex-1 items-center gap-12 py-20 lg:grid-cols-[1fr_0.9fr]">
+          <div>
+            <p className="mb-5 inline-flex rounded-full border border-border bg-white/5 px-4 py-2 text-sm text-muted">
+              AI-powered message intent analyzer
+            </p>
+
+            <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              Decode suspicious messages before you reply.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+              Paste a DM, email, SMS, or LinkedIn pitch. IntentScan detects
+              scams, spam, manipulation, social red flags, and generates clean
+              replies you can copy.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#analyze"
+                className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+              >
+                Analyze a message
+              </a>
+              <a
+                href="#examples"
+                className="rounded-full border border-border bg-white/5 px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+              >
+                View examples
+              </a>
+            </div>
+          </div>
+
+          <div
+            id="analyze"
+            className="rounded-3xl border border-border bg-white/[0.04] p-5 shadow-2xl backdrop-blur"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="font-semibold">Message analyzer</h2>
+                <p className="mt-1 text-sm text-muted">
+                  Mistral integration coming next.
+                </p>
+              </div>
+              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+                Preview
+              </div>
+            </div>
+
+            <textarea
+              className="min-h-56 w-full resize-none rounded-2xl border border-border bg-black/30 p-4 text-sm outline-none transition placeholder:text-zinc-600 focus:border-accent/60"
+              placeholder="Paste a weird message here..."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <button className="mt-4 w-full rounded-2xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90">
+              Analyze intent
+            </button>
+          </div>
         </div>
-      </main>
-    </div>
+
+        <section id="examples" className="grid gap-4 pb-10 md:grid-cols-3">
+          {examples.map((example) => (
+            <div
+              key={example}
+              className="rounded-2xl border border-border bg-white/[0.03] p-4 text-sm leading-6 text-muted"
+            >
+              “{example}”
+            </div>
+          ))}
+        </section>
+      </section>
+    </main>
   );
 }
