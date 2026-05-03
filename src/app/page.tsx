@@ -55,7 +55,12 @@ export default function Home() {
 
         <div className="grid flex-1 items-center gap-12 py-20 lg:grid-cols-[1fr_0.9fr]">
           <HeroSection t={t} />
-          <AnalyzerCard message={message} setMessage={setMessage} t={t} />
+          <AnalyzerCard
+            locale={locale}
+            message={message}
+            setMessage={setMessage}
+            t={t}
+          />
         </div>
 
         <ExamplesSection setMessage={setMessage} t={t} />

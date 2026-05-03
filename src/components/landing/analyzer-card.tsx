@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { AnalyzeResponse } from "@/lib/analyze-schema";
-import type { Translations } from "@/lib/i18n";
+import type { Locale, Translations } from "@/lib/i18n";
 
 const riskStyles = {
   LOW: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
@@ -17,12 +17,18 @@ const riskStyles = {
 } as const;
 
 type AnalyzerCardProps = {
+  locale: Locale;
   message: string;
   setMessage: Dispatch<SetStateAction<string>>;
   t: Translations;
 };
 
-export function AnalyzerCard({ message, setMessage, t }: AnalyzerCardProps) {
+export function AnalyzerCard({
+  locale,
+  message,
+  setMessage,
+  t,
+}: AnalyzerCardProps) {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +50,7 @@ export function AnalyzerCard({ message, setMessage, t }: AnalyzerCardProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, locale }),
       });
 
       const data = await response.json();

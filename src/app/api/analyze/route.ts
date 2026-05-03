@@ -9,7 +9,13 @@ const mistral = new Mistral({
 
 export async function POST(request: Request) {
   try {
-    const { message } = (await request.json()) as { message?: unknown };
+    const { message, locale } = (await request.json()) as {
+      message?: unknown;
+      locale?: unknown;
+    };
+
+    const responseLanguage =
+      locale === "fr" ? "French" : locale === "en" ? "English" : "French";
 
     if (typeof message !== "string" || message.trim().length < 10) {
       return NextResponse.json(
@@ -51,6 +57,7 @@ Return only valid JSON matching this exact shape:
 }
 
 Rules:
+- Respond entirely in ${responseLanguage}.
 - Base the analysis only on the submitted message.
 - Do not invent facts.
 - If unsure, use UNKNOWN.
