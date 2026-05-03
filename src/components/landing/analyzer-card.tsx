@@ -20,6 +20,7 @@ export function AnalyzerCard() {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [copiedTone, setCopiedTone] = useState<string | null>(null);
 
   async function analyzeMessage() {
     if (message.trim().length < 10) {
@@ -52,6 +53,19 @@ export function AnalyzerCard() {
       setError("Something went wrong.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function copyReply(tone: string, reply: string) {
+    try {
+      await navigator.clipboard.writeText(reply);
+      setCopiedTone(tone);
+
+      setTimeout(() => {
+        setCopiedTone(null);
+      }, 1500);
+    } catch {
+      setError("Failed to copy reply.");
     }
   }
 
@@ -93,6 +107,7 @@ export function AnalyzerCard() {
               <Badge variant="secondary">
                 Risk: {result.riskLevel} ({result.riskScore}/100)
               </Badge>
+
               <Badge variant="outline">Intent: {result.intent}</Badge>
             </div>
 
@@ -109,12 +124,28 @@ export function AnalyzerCard() {
 
             <div>
               <h3 className="mb-3 text-sm font-semibold">Copy-ready replies</h3>
+
               <div className="grid gap-3">
                 {Object.entries(result.replyOptions).map(([tone, reply]) => (
-                  <div key={tone} className="rounded-xl border border-border bg-card p-3">
-                    <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-primary">
-                      {replyLabels[tone as keyof typeof replyLabels]}
+                  <div
+                    key={tone}
+                    className="rounded-xl border border-border bg-card p-3"
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+                        {replyLabels[tone as keyof typeof replyLabels]}
+                      </div>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => copyReply(tone, reply)}
+                      >
+                        {copiedTone === tone ? "Copied!" : "Copy"}
+                      </Button>
                     </div>
+
                     <p className="text-sm leading-6 text-muted-foreground">
                       {reply}
                     </p>
