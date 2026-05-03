@@ -96,6 +96,7 @@ export function AnalyzerCard({
         </div>
 
         <Textarea
+          id="message-input"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           onKeyDown={(event) => {

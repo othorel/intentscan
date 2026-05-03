@@ -12,13 +12,25 @@ export function ExamplesSection({
   setMessage,
   t,
 }: ExamplesSectionProps) {
+  function handleExampleClick(example: string) {
+    setMessage(example);
+
+    document
+      .getElementById("analyze")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    window.setTimeout(() => {
+      document.getElementById("message-input")?.focus();
+    }, 300);
+  }
+
   return (
     <section id="examples" className="grid gap-4 pb-10 md:grid-cols-3">
       {t.examples.items.map((example) => (
         <button
           key={example}
           type="button"
-          onClick={() => setMessage(example)}
+          onClick={() => handleExampleClick(example)}
           className="text-left"
         >
           <Card className="h-full bg-card/60 transition hover:border-primary/40 hover:bg-card/80">
