@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "IntentScan",
+  "version": "0.1.0",
+  "description": "Analyze LinkedIn messages for scams, spam, manipulation, and red flags.",
+  "permissions": [],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "http://localhost:3000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/messaging",
+        "https://www.linkedin.com/messaging/*"
+      ],
+      "js": ["contentScript.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
