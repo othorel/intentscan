@@ -9,32 +9,58 @@ type AnalyzeMessageResponse =
   | { ok: false; error: string };
 
 function getVisibleConversationText() {
-  const conversationRoot =
-    document.querySelector('[data-view-name="message-thread"]') ??
-    document.querySelector(".msg-s-message-list-container") ??
-    document.body;
+  const candidates = [
+    document.querySelector('[data-view-name="message-thread"]'),
+    document.querySelector(".msg-s-message-list-container"),
+    document.querySelector(".msg-thread"),
+    document.querySelector(".msg-s-event-list"),
+    document.querySelector(".scaffold-layout__detail"),
+  ].filter(Boolean);
 
-  const rawText = conversationRoot.textContent ?? "";
+  for (const candidate of candidates) {
+    const rawText = candidate.textContent ?? "";
 
-  return rawText
-    .replace(/\s+/g, " ")
-    .replace(/Le statut est :.*?niveau · 1er/g, "")
-    .replace(/Voir le profil de .*? \d{1,2}:\d{2}/g, "")
-    .replace(
-      /\b\d{1,2}\s+(janv|févr|mars|avr|mai|juin|juil|août|sept|oct|nov|déc)\.?\b/gi,
-      ""
-    )
-    .replace(
-      /[A-ZÀ-ÿ][A-ZÀ-ÿ\s'-]+ a envoyé (le message suivant|les messages suivants) à \d{1,2}:\d{2}/g,
-      ""
-    )
-    .replace(
-      /[A-ZÀ-ÿ][A-ZÀ-ÿ\s'-]+ a envoyé (le message suivant|les messages suivants)/g,
-      ""
-    )
-    .replace(/👏|👍|😊/g, "")
-    .replace(/Ouvrir le clavier des émoticônes/g, "")
-    .trim();
+    const cleanedText = rawText
+      .replace(/\s+/g, " ")
+      .replace(/0 notification au total/g, "")
+      .replace(/Accéder à la recherche/g, "")
+      .replace(/Passer au contenu principal/g, "")
+      .replace(/Raccourcis clavier/g, "")
+      .replace(/Fermer le menu de navigation/g, "")
+      .replace(/Le statut est :.*?niveau · 1er/g, "")
+      .replace(/Voir le profil de .*? \d{1,2}:\d{2}/g, "")
+      .replace(/Ouvrir la liste des options.*?(?=LinkedIn|Sponsorisé|Bonjour|$)/g, "")
+      .replace(/Accessibilité :.*$/g, "")
+      .replace(/Infos Accessibilité Assistance clientèle.*$/g, "")
+      .replace(/Rédiger un message.*$/g, "")
+      .replace(/Analyze with IntentScan/g, "")
+      .replace(
+        /\b\d{1,2}\s+(janv|févr|mars|avr|mai|juin|juil|août|sept|oct|nov|déc)\.?\b/gi,
+        ""
+      )
+      .replace(
+        /[A-ZÀ-ÿ][A-ZÀ-ÿ\s'-]+ a envoyé (le message suivant|les messages suivants) à \d{1,2}:\d{2}/g,
+        ""
+      )
+      .replace(
+        /[A-ZÀ-ÿ][A-ZÀ-ÿ\s'-]+ a envoyé (le message suivant|les messages suivants)/g,
+        ""
+      )
+      .replace(/👏|👍|😊/g, "")
+      .replace(/Ouvrir le clavier des émoticônes/g, "")
+      .trim();
+
+    if (
+      cleanedText &&
+      !cleanedText.includes('"entityUrn"') &&
+      !cleanedText.includes("com.linkedin.voyager") &&
+      cleanedText.length > 30
+    ) {
+      return cleanedText;
+    }
+  }
+
+  return "";
 }
 
 function showIntentScanPopup(data: unknown) {
@@ -66,7 +92,7 @@ function showIntentScanPopup(data: unknown) {
       <button id="intentscan-popup-close" type="button">×</button>
     </div>
 
-    <div class="intentscan-score">
+    <div class="intentscan-score intentscan-risk-${(result.riskLevel ?? "UNKNOWN").toLowerCase()}">
       <span>${result.riskLevel ?? "UNKNOWN"}</span>
       <strong>${result.riskScore ?? "?"}/100</strong>
     </div>
@@ -95,12 +121,20 @@ function showIntentScanPopup(data: unknown) {
         ${Object.entries(result.replyOptions ?? {})
           .map(
             ([label, text]) => `
-              <button class="intentscan-copy-reply" type="button" data-reply="${encodeURIComponent(
-                text
-              )}">
+            <div class="intentscan-reply-card">
+              <div>
                 <span>${label}</span>
                 <small>${text}</small>
+              </div>
+              <button
+                class="intentscan-copy-reply"
+                type="button"
+                aria-label="Copy reply"
+                data-reply="${encodeURIComponent(text)}"
+              >
+                ⧉
               </button>
+            </div>
             `
           )
           .join("")}
@@ -122,12 +156,23 @@ function showIntentScanPopup(data: unknown) {
         return;
       }
 
-      void navigator.clipboard.writeText(decodeURIComponent(reply));
+      void navigator.clipboard.writeText(decodeURIComponent(reply)).then(() => {
+        button.textContent = "✓";
+
+        window.setTimeout(() => {
+          button.textContent = "⧉";
+        }, 1200);
+      });
     });
   });
 }
 
 function injectAnalyzeButton() {
+  if (!window.location.pathname.includes("/messaging")) {
+    document.getElementById(buttonId)?.remove();
+    return;
+  }
+
   if (document.getElementById(buttonId)) {
     return;
   }
@@ -166,7 +211,7 @@ function injectAnalyzeButton() {
     console.log("[IntentScan] extracted conversation:", messageText);
 
     if (!messageText) {
-      alert("Aucun texte détecté.");
+      alert("Aucun texte détecté. Ouvre une conversation LinkedIn puis réessaie.");
       return;
     }
 
@@ -193,4 +238,10 @@ function injectAnalyzeButton() {
   document.body.appendChild(button);
 }
 
-injectAnalyzeButton();
+function keepAnalyzeButtonAlive() {
+  injectAnalyzeButton();
+
+  window.setTimeout(keepAnalyzeButtonAlive, 1000);
+}
+
+keepAnalyzeButtonAlive();
